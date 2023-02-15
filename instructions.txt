@@ -1,0 +1,109 @@
+https://www.youtube.com/watch?v=72_5_YuDCNA
+
+1. Install necessary package for the typescript
+2. npm i -g nodemon ts-node prettier typescript
+3. npm init
+4. npm i dotenv joi mongoose express
+5. npm i --save-dev typescript @types/express
+6. Edit the package.json
+    "build":"rm -rf build/ && tsc",
+    "start": "node build/server.js"
+7. tsc --init
+8. edit tsconfig.json
+{
+	"compilerOptions": {
+		"target": "es2016",
+		"module": "commonjs",
+		"outDir": "./build",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*"]
+}
+9.Add the extension express dotenv prettier
+10. Add a folder and setting for vscode
+11. edit settings.json inside .vscode
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.wordW":"on"
+}
+12. add .prettierrc
+{
+  "singleQuote": true,
+  "printWidth": 200,
+  "proseWrap": "always",
+  "tabWidth": 4,
+  "useTabs": false,
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "semi": true
+}
+13. Add the src folder 
+Inside the src folder include:
+ config, controllers, library, middleware, models, routes
+14. Inside the config 
+? we create a config.ts
+/**
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+ const MONGO_USERNAME = process.env.MONGO_USERNAME || '';
+ const MONGO_PASSWORD = process.env.MONGO_PASSWORD || '';
+
+ const MONGO_URL = 'mongodb://localhost:27017/';
+ const SERVER_PORT = process.env.SERVER_PORT ? Number(process.env.SERVER_PORT): 1337;
+
+ export const config = 
+ {
+  mongo :{
+    url : MONGO_URL
+  },
+  server:{
+    port: SERVER_PORT
+  }
+ }
+
+*/
+15. create server.ts file inside the src folder
+
+import express from 'express';
+import http from 'http';
+import mongoose from 'mongoose';
+import { config } from './config/config';
+const router  = express();
+
+/** CONNECT to MONGO */
+mongoose.connect(config.mongo.url, { retryWrites:ヽ(ー_ー )ノ true , w: 'majority'})
+.then(()=>{
+  console.log('Connected')
+}) 
+.catch(()=>{
+  console.log('Error')
+})
+
+16. Rename the main in the package.json to src/server.ts
+17. on the root directory add .env
+MONGO_USERNAME ="admin"
+MONGO_PASSWORD  = "admin"
+
+SERVER_PORT ="9090"
+
+18. Add logging for the information inside the library
+
+export default class Logging {
+  public static log = (args: any) => this.info(args)
+    public static info = (args: any) => console.log('\x1b[36m%s\x1b[0m', `${new Date().toLocaleString()} [INFO]`, typeof args === 'string' ? args : args);
+
+    public static warn = (args: any) => console.log('\x1b[33m%s\x1b[0m', `${new Date().toLocaleString()} [INFO]`, typeof args === 'string' ? args : args);
+
+    public static error = (args: any) => console.log('\x1b[31m', `${new Date().toLocaleString()} [INFO]`, typeof args === 'string' ? args : args);
+}
+
+19 add the logging your server.ts
